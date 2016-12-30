@@ -1,0 +1,32 @@
+{
+  "name": "thermostaat",
+  "version": "0.0.0",
+  "description": "Thermostaat with web interface",
+  "main": "main.js",
+  "dependencies": {
+    "express": "^4.14.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "browserify": "^13.1.1",
+    "faucet": "0.0.1",
+    "tape": "^4.6.3"
+  },
+  "scripts": {
+    "test": "babel-node test.js | faucet"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ptillemans/blubjs.git"
+  },
+  "keywords": [
+    "beaglebone",
+    "bbb",
+    "thermostat"
+  ],
+  "author": "Peter Tillemans",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ptillemans/blubjs/issues"
+  }
+}
