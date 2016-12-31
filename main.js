@@ -11,21 +11,41 @@
 //   views/
 //
 var express = require('express');
-var app = module.exports = express.createServer();
-var viewEngine = 'jade'; // modify for your view engine
+var http = require('http');
+var bodyParser = require('body-parser');
+var serveStatic = require('serve-static');
+var errorHandler = require('errorhandler');
+
+var ds1820 = require("./lib/ds1820");
+
+var app = module.exports = express();
+var server = http.createServer(app);
+var viewEngine = 'pug'; // modify for your view engine
+
+var env = process.env.NODE_ENV || 'development';
+
 // Configuration
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', viewEngine);
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
+app.set('view engine', viewEngine);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(serveStatic(__dirname + '/public'));
+
+app.get('/', function (req, res) {
+  ds1820.readTemperature()
+  .then(function(temp) {
+    res.render('index', { title: 'Hey', message: 'Hello there!', temperature: temp })
+  });
 });
-app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
-app.configure('production', function(){
+
+if ('development' == env) {
+  app.use(errorHandler({ dumpExceptions: true, showStack: true }));
+};
+
+if ('production' == env) {
   app.use(express.errorHandler());
+};
+
+app.listen(8000, function () {
+  console.log('Ready');
 });
 // *******************************************************

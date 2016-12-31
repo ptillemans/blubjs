@@ -26,3 +26,75 @@ in the voltage regulator.
 
 The relays are hooked up to P9.14 and P9.16 as I am not planning to use the PWM 
 outputs at the moment.
+
+# Development
+
+## Testing 
+
+We use the *tape* testing framework for lightweight testing on this project.2-Relay Module
+
+    babel-node test.js | faucet
+    
+or 
+
+    npm run test
+    
+to test.
+
+## Promises 
+
+Node v0.10 does not come with native promises. This is a problem, as once one 
+tasted from promises it is difficult to go back to callbacks.
+
+The *bluebird* library is used here as it allows to *promisify* the interfaces.
+
+## Immutable JS
+
+We'll use unidirectional data flow which in enforced with immutable js.
+
+Experience shows this keeps chaos in check.
+
+## Redux
+
+Good experience with Redux. Want more of it, this time server-side.
+
+## Redux Thunk
+
+To do the asynchronous processing, but keep the codebase *pure* we immediately
+add  the thunk-middleware to evaluate functions in the middleware.
+
+## Lodash
+
+Lodash comes as a *redux* dependency, so we may as well use it. It is a well
+rounded library for functional programming.
+
+## node-cron
+
+Any non trivial project needs background jobs, and over the years the bar for 
+being non-trivial gets lower and lower.
+
+Node cron is a simple library using the age-old cron syntax to schedule jobs.
+
+so we can run tasks like 
+
+    var cron = require('cron');
+    cronJob = cron.job('*/5 * * * *', function() {/* do something */});
+    cronJob.start();
+    
+to run a function every 5 seconds. Perfect.
+
+# Notes on rejected technologies
+
+## ES6 with Babel
+
+I tried it but it takes too much diskspace and it is too slow so I removed it 
+again. So we'll stick with ES5 for the time being.
+
+This breaks my heart... but not as much as having to wait 30s each time I do 
+something.
+
+## WebPack
+
+Same story but did not try it, yet. Might reconsider, but for the time being it
+is no longer considered.
+

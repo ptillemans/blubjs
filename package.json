@@ -4,16 +4,23 @@
   "description": "Thermostaat with web interface",
   "main": "main.js",
   "dependencies": {
-    "express": "^4.14.0"
+    "bluebird": "^3.4.7",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "immutable": "^3.8.1",
+    "lodash": "^4.17.3",
+    "node-cron": "^1.1.2",
+    "pug": "^2.0.0-beta6",
+    "redux": "^3.6.0",
+    "serve-static": "^1.11.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.18.0",
     "browserify": "^13.1.1",
     "faucet": "0.0.1",
     "tape": "^4.6.3"
   },
   "scripts": {
-    "test": "babel-node test.js | faucet"
+    "test": "node test.js | faucet"
   },
   "repository": {
     "type": "git",
