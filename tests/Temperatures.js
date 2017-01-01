@@ -5,6 +5,7 @@ var _ = require('lodash');
 var redux = require('redux');
 var td = require('testdouble');
 var timers = require('testdouble-timers').default;
+var Promise = require('bluebird');
 
 timers.use(td);
 
