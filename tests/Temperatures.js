@@ -9,14 +9,19 @@ var timers = require('testdouble-timers').default;
 timers.use(td);
 
 test('action creator for adding temperatures', function(t) {
-  t.plan(2);
+  t.plan(3);
+
+  var clock = td.timers();
 
   var expected = 25.0;
   var action = Temperatures.addTemperature(expected);
-  var actual = action.temperature;
+  var actual = action.payload;
 
   t.equal('ADD_TEMPERATURE', action.type);
-  t.equal(actual, expected, "Expected given temperature as payload");
+  t.equal(actual.get('temp'), expected, "Expected given temperature as payload");
+  t.equal(actual.get('ts'), Date.now(), "Expected current timestamp on payload");
+
+  td.reset();
 });
 
 test('reducer returns initialstate at first', function(t) {
@@ -31,20 +36,20 @@ test('reducer returns initialstate at first', function(t) {
 test('reducer adds temperature to back of list', function(t) {
   t.plan(2);
 
+  var sample = {temp: 0.0, ts: 0};
   var state = Immutable.fromJS({
-    temperatureList: [0.0, 0.0, 0.0]
+    temperatureList: [ sample, sample, sample]
   });
 
   var expected = 25.0;
   var action = Temperatures.addTemperature(expected);
   var newState = Temperatures.temperatureReducer(state, action);
   var actual = newState.get('temperatureList');
-
+  console.log(actual);
   t.equal(4, actual.count(), "Expected temperatureList to grow");
-  t.equal(actual.last(), expected, "Expected to have the temperature at the end of the list");
+  t.equal(actual.last().get('temp'), expected, "Expected to have the temperature at the end of the list");
 
 });
-
 
 test('reducer only keeps 24h worth of temperatures', function(t) {
   t.plan(1);
@@ -61,12 +66,11 @@ test('reducer only keeps 24h worth of temperatures', function(t) {
   t.equal(actual.get('temperatureList').count(), nPoints);
 });
 
-
 test('sample temperature method measure 12 times per minute', function(t) {
-  t.plan(2);
+  t.plan(12);
 
 
-  var measureFunction = function() { return 25.0;  };
+  var measureFunction = function() { t.pass(); return Promise.resolve(25.0);  };
   var store = redux.createStore(Temperatures.temperatureReducer);
 
   var time = Date.now();
@@ -75,13 +79,7 @@ test('sample temperature method measure 12 times per minute', function(t) {
 
   Temperatures.startSampling(store, measureFunction);
 
-  clock.tick(5000);
-  var actualCount = store.getState().get('temperatureList').count();
-  t.equal(actualCount, 1, "expected 1 sample after 6 seconds");
-
-  clock.tick(55000);
-  actualCount = store.getState().get('temperatureList').count();
-  t.equal(actualCount, 12, "expected 12 samples after 61 seconds");
+  clock.tick(60000);
 
   td.reset();
 });

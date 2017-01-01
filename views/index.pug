@@ -1,6 +1,16 @@
 html
-  head
-    title= title
+  include includes/head.pug
   body
-    h1= message
-    p Temperature is #{temperature}℃
+    div(class="container-fluid theme-showcase")
+      div(class="jumbotron")
+        h1 Blub de thermostaat
+      div(class="row")
+        div(class="col-md-8 graph")
+          canvas#myChart(width="400" height="400")
+          script(src="/javascript/temperatureChart.js")
+        div(class="col-md-4 info")
+          h1
+            span(class="label label-success") #{temperature}℃
+
+
+    include includes/footer.pug
