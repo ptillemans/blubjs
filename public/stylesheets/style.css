@@ -1,0 +1,15 @@
+body, html, .container-fluid {
+    height: 100%;
+}
+
+body {
+    display: table;
+}
+
+.graph {
+    display: table-cell;
+}
+
+.info {
+    display: table-cell;
+}
