@@ -18,7 +18,7 @@ test('action creator for adding temperatures', function(t) {
   var action = Temperatures.addTemperature(expected);
   var actual = action.payload;
 
-  t.equal('ADD_TEMPERATURE', action.type);
+  t.equal(action.type, 'ADD_TEMPERATURE');
   t.equal(actual.get('temp'), expected, "Expected given temperature as payload");
   t.equal(actual.get('ts'), Date.now(), "Expected current timestamp on payload");
 

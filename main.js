@@ -15,14 +15,18 @@ var http = require('http');
 var bodyParser = require('body-parser');
 var serveStatic = require('serve-static');
 var errorHandler = require('errorhandler');
+var Promise = require('bluebird');
 
 var ds1820 = require("./lib/ds1820");
 var Temperatures = require("./lib/Temperatures");
+
+ds1820.initDriver();
 
 var app = module.exports = express();
 var server = http.createServer(app);
 var viewEngine = 'pug'; // modify for your view engine
 
+console.log('express initialized.')
 var env = process.env.NODE_ENV || 'development';
 
 var redux = require('redux');
@@ -33,9 +37,12 @@ var rootReducer = redux.combineReducers({
 });
 var store = redux.createStore(rootReducer);
 
+console.log('redux initialized.')
+
 if ('development' == env) {
   Temperatures.startSampling(store, function() {
-    return Promise.resolve(Math.random()*10 + 15.0); });
+    return Promise.resolve(Math.random()*10 + 15.0); 
+  });
 } else {
   Temperatures.startSampling(store, ds1820.readTemperature);
 };
@@ -45,6 +52,8 @@ app.set('view engine', viewEngine);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(serveStatic(__dirname + '/public'));
+
+console.log('app configured.');
 
 app.get('/', function (req, res) {
   var state = store.getState().temperature;
@@ -71,6 +80,8 @@ app.get('/temperature.json', function (req, res) {
 
   res.json(data);
 });
+
+console.log('Routes created.');
 
 if ('development' == env) {
   app.use(errorHandler({ dumpExceptions: true, showStack: true }));

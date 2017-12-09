@@ -7,6 +7,8 @@ td.replace(ds1820, 'readTemperatureSensorFile', function() {
   return Promise.resolve("blablablablabla\nblablablablbla t=22123");
 });
 
+ds1820.initDriver();
+
 
 test("read sensor file", function(t) {
   t.plan(2);
@@ -24,7 +26,7 @@ test("read sensor file", function(t) {
 
 test("read temperature and test if about room temperature", function(t) {
   t.plan(2);
-
+  
   ds1820.readTemperature()
     .then(function(temp) {
       t.ok(temp < 25.0, "Temperature should be lower than 25 degrees, but was " + temp);

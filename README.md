@@ -15,6 +15,11 @@ sensors with a sturdy long cable.
 
 Hooked the output up to P9.12.
 
+To enable the kernel driver, do:
+
+    $ echo DS1820 >/sys/devices/bone_capemgr.9/slots
+    
+
 ## 2-Relay Module
 
 I ordered on e-bay a couple of relay boards for the arduino. They have a 
