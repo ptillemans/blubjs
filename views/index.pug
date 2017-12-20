@@ -9,7 +9,18 @@ html
           canvas#myChart(width="400" height="400")
         div(class="col-md-4 info")
           h1
-            span(class="label label-success") #{temperature}℃
+            span(class="label label-success") 
+              span#actual #{actual}
+              span ℃
+          h1
+            span(class="label label-warning")
+              span#target #{target}
+              span ℃
 
 
+      div(class="row")
+        div#slidecontainer
+          input(type="range" min="12" max="25" value=target class="slider" id="targetRange")
+    
+    
     include includes/footer.pug

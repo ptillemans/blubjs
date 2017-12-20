@@ -19,6 +19,7 @@ var Promise = require('bluebird');
 
 var ds1820 = require("./lib/ds1820");
 var Temperatures = require("./lib/Temperatures");
+var PIDController = require("./lib/PIDController.js")
 
 ds1820.initDriver();
 
@@ -33,65 +34,90 @@ var redux = require('redux');
 
 
 var rootReducer = redux.combineReducers({
-  temperature: Temperatures.temperatureReducer
+  temperature: Temperatures.temperatureReducer,
+  pidController: PIDController.pidReducer
 });
 var store = redux.createStore(rootReducer);
 
 console.log('redux initialized.')
 
-if ('development' == env) {
-  Temperatures.startSampling(store, function() {
-    return Promise.resolve(Math.random()*10 + 15.0); 
-  });
-} else {
-  Temperatures.startSampling(store, ds1820.readTemperature);
-};
+Temperatures.startSampling(store, ds1820.readTemperature);
 
 // Configuration
 app.set('view engine', viewEngine);
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 app.use(serveStatic(__dirname + '/public'));
 
 console.log('app configured.');
 
-app.get('/', function (req, res) {
-  var state = store.getState().temperature;
-  var sample = state.get('temperatureList').last();
-  res.render('index', { title: 'Hey', message: 'Hello there!', temperature: sample.get('temp').toFixed(2) });
+app.get('/', function(req, res) {
+  var state = store.getState().pidController;
+  var sample = state.get('history').last();
+  res.render('index', {
+    title: 'Blub',
+    message: '',
+    actual: sample.actual,
+    target: sample.target,
+  });
 });
 
-app.get('/temperature.json', function (req, res) {
-  var state = store.getState().temperature;
-  var minuteMeasured = function(o) {return 60000 * Math.floor(o.get('ts')/60000);};
-  var averageSamples = function(v, k) {
-    var cnt = v.count();
-    var sum = v.map(function(o) {return o.get('temp');})
-        .reduce(function(a, v) {return a + v;}, 0);
-    return sum/cnt;
+app.get('/temperature.json', function(req, res) {
+  var state = store.getState().pidController;
+  var minuteMeasured = function(o) {
+    return 60000 * Math.floor(o.get('ts') / 60000);
   };
-  var toSample = function(v, k) {return {ts: k, temp: v};};
 
-  var data = state.get('temperatureList')
-      .groupBy(minuteMeasured)
-      .map(averageSamples)
-      .map(toSample)
-      .toArray();
+  var averageSamples = function(keys) {
+    return function(v, k) {
+      var cnt = v.count();
+      var averages = {};
+      var sum = (a, b) => a + b;
+      var avg = (key) => v.map((o) => o.get(key))
+        .reduce(sum, 0) / cnt;
+      var addAvg = (sample, key) => Object.assign(sample, {
+        [key]: avg(key)
+      });
+
+      return keys.reduce(addAvg, {
+        ts: k
+      });
+    };
+  }
+  var raw = state.get('history')
+  var data = raw.groupBy(minuteMeasured)
+    .map(averageSamples(['actual', 'target', 'heater_on', 'error', 'difference', 'sum', 'control']))
+    .toArray();
 
   res.json(data);
 });
 
+app.post('/temperature', function(req, res) {
+  var data = req.body;
+  store.dispatch(PIDController.createSetTargetAction(data.target))
+  var resp = Object.assign(data, {
+    accepted: true
+  })
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify(resp));
+})
+
 console.log('Routes created.');
 
 if ('development' == env) {
-  app.use(errorHandler({ dumpExceptions: true, showStack: true }));
+  app.use(errorHandler({
+    dumpExceptions: true,
+    showStack: true
+  }));
 };
 
 if ('production' == env) {
   app.use(express.errorHandler());
 };
 
-app.listen(8000, function () {
+app.listen(8000, function() {
   console.log('Ready');
 });
 // *******************************************************
