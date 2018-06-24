@@ -43,17 +43,16 @@ const mapStateToProps = function(state) {
   type: "line",
   data: getData(state.samples),
   options: {
+    responsive: true,
     scales: {
       xAxes: [{
         type: 'time',
-        time: {
-          unit: 'minute',
-          unitStepSize: 10,
-          displayFormats: {
-            minute: 'h:mm'
-          }
-        },
         display: true
+      }],
+      yAxes: [{
+        type: 'linear',
+        beginAtZero: true,
+        max: 30
       }]
     },
     animation: {

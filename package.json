@@ -14,11 +14,14 @@
     "immutable": "^3.8.2",
     "node-cron": "^1.1.2",
     "pug": "^2.0.0-beta6",
+    "ramda": "^0.25.0",
     "redux": "^3.6.0",
     "serve-static": "^1.11.1"
   },
   "devDependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "browserify": "^13.1.1",
+    "chart.js": "^2.7.2",
     "faucet": "0.0.1",
     "jquery": "^3.2.1",
     "react": "^16.2.0",
@@ -28,13 +31,14 @@
     "tape": "^4.6.3",
     "testdouble": "^3.2.6",
     "testdouble-timers": "^0.1.1",
+    "time-enforcer": "0.0.2",
     "watchify": "^3.9.0"
   },
   "scripts": {
     "test": "node test.js | faucet",
     "build": "cp node_modules/chart.js/dist/Chart.bundle.min.js public/javascript && cp node_modules/bootstrap/dist/css/bootstrap.min.css public/stylesheets",
-    "make": "browserify public/javascript/index.js -o public/bundle.js",
-    "watch": "watchify public/javascript/index.js -o public/bundle.js"
+    "make": "browserify public/javascript/index.js -o public/bundle.js -d -t [ babelify ]",
+    "watch": "watchify public/javascript/index.js -o public/bundle.js -v -d -t [ babelify ]"
   },
   "repository": {
     "type": "git",

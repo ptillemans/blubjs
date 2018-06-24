@@ -1,26 +1,11 @@
+doctype html
 html
   include includes/head.pug
   body
     div(class="container-fluid theme-showcase")
       div(class="jumbotron")
         h1 Blub de thermostaat
-      div(class="row")
-        div(class="col-md-8 graph")
-          canvas#myChart(width="400" height="400")
-        div(class="col-md-4 info")
-          h1
-            span(class="label label-success") 
-              span#actual #{actual}
-              span ℃
-          h1
-            span(class="label label-warning")
-              span#target #{target}
-              span ℃
+      div#root
+        p React stuff comes here
 
-
-      div(class="row")
-        div#slidecontainer
-          input(type="range" min="12" max="25" value=target class="slider" id="targetRange")
-    
-    
     include includes/footer.pug

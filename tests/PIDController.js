@@ -3,12 +3,15 @@ var Immutable = require('immutable');
 var td = require('testdouble');
 var timers = require('testdouble-timers').default;
 var pid = require('../lib/PIDController');
-var temperature = require('../lib/Temperatures')
+var temperature = require('../lib/Temperatures');
 
 timers.use(td);
 
+var TEST_DATE = new Date(2018,5,24,12,0);
+
 var TEST_STATE = Immutable.fromJS({
   history: [{
+    ts: 0,
     heater_on: false,
     actual: 20,
     target: 14,
@@ -18,16 +21,16 @@ var TEST_STATE = Immutable.fromJS({
     control: 0
   }],
   target: 14,
-  k_p: 0,
-  k_d: 0,
-  k_i: 0,
+  k_p: 5,
+  k_d: 3,
+  k_i: 2,
 });
 
 test('action creator for setting target temperature', function(t) {
   t.plan(2);
   const TARGET_TEMP = 20;
 
-  var action = pid.setTargetTemperature(TARGET_TEMP);
+  var action = pid.createSetTargetAction(TARGET_TEMP);
   t.equal(action.type, 'SET_TARGET_TEMPERATURE');
   t.equal(action.payload, TARGET_TEMP);
 })
@@ -35,7 +38,13 @@ test('action creator for setting target temperature', function(t) {
 test('reduce set initial state', function(t) {
   t.plan(1);
 
-  var actual = pid.pidReducer(undefined, {});
+  var actual;
+
+  console.log("test : ", TEST_DATE.getTime())
+  console.log("Date.now(): ", Date.now())
+
+  actual = pid.pidReducer(undefined, {});
+
   var expected = TEST_STATE;
   t.deepEqual(actual, expected, "expected reducer to initialize state");
 
@@ -44,7 +53,7 @@ test('reduce set initial state', function(t) {
 test('reducer set target when reducing the set target action', function(t) {
   t.plan(1)
   var target = 20;
-  var action = pid.setTargetTemperature(target);
+  var action = pid.createSetTargetAction(target);
   var state = pid.pidReducer(TEST_STATE, action);
 
   t.equal(state.get('target'), target, "Expected target to be updated")
@@ -70,8 +79,8 @@ test('reducer updates pid signals', function(t) {
   var state = pid.pidReducer(TEST_STATE, action);
   var last = state.get('history').last();
   t.equal(last.get('error'), -1, 'expected -1 error signal');
-  t.equal(last.get('difference'), -1 - 0, 'expected -1 difference signal');
-  t.equal(last.get('sum'), -1 + 0, 'expected -1 sum signal');
+  t.equal(last.get('difference'), -1, 'expected -1 difference signal');
+  t.equal(last.get('sum'), -1, 'expected -1 sum signal');
 
   state = pid.pidReducer(state, action);
   last = state.get('history').last();

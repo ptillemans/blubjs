@@ -13,10 +13,10 @@ class Chart extends Component {
     }
 
     componentDidUpdate() {
+        console.log("Chart component was updated")
         if (this.chart) {
             this.chart.data = this.props.data;
             this.chart.update();
-            console.log(this.chart)
         }
     }
 

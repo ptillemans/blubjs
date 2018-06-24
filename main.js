@@ -69,6 +69,11 @@ app.get('/temperature.json', function(req, res) {
   var minuteMeasured = function(o) {
     return 60000 * Math.floor(o.get('ts') / 60000);
   };
+  var within24h = function(o) {
+    var ts = o.get('ts');
+    var beginning = Date.now() - 24*60*60*1000;
+    return ts > beginning;
+  }
 
   var averageSamples = function(keys) {
     return function(v, k) {
@@ -87,7 +92,9 @@ app.get('/temperature.json', function(req, res) {
     };
   }
   var raw = state.get('history')
-  var data = raw.groupBy(minuteMeasured)
+  var data = raw
+    .filter(within24h)
+    .groupBy(minuteMeasured)
     .map(averageSamples(['actual', 'target', 'heater_on', 'error', 'difference', 'sum', 'control']))
     .toArray();
 
@@ -96,12 +103,20 @@ app.get('/temperature.json', function(req, res) {
 
 app.post('/temperature', function(req, res) {
   var data = req.body;
-  store.dispatch(PIDController.createSetTargetAction(data.target))
-  var resp = Object.assign(data, {
-    accepted: true
-  })
-  res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify(resp));
+  console.log('post temperature:' + JSON.stringify(data));
+  var target = Number(data.target);
+  if (target > 4 && target <= 25) {
+
+    store.dispatch(PIDController.createSetTargetAction(data.target))
+
+    var resp = Object.assign(data, {
+      accepted: true
+    })
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(resp));
+  } else {
+    res.status(400).send('target should be between 4 and 25 degrees celcius.')
+  }
 })
 
 console.log('Routes created.');
