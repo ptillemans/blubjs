@@ -19,7 +19,8 @@ var Promise = require('bluebird');
 
 var ds1820 = require("./lib/ds1820");
 var Temperatures = require("./lib/Temperatures");
-var PIDController = require("./lib/PIDController.js")
+var PIDController = require("./lib/PIDController")
+var Scheduler = require("./lib/Scheduler");
 
 ds1820.initDriver();
 
@@ -35,11 +36,12 @@ var redux = require('redux');
 
 var rootReducer = redux.combineReducers({
   temperature: Temperatures.temperatureReducer,
-  pidController: PIDController.pidReducer
+  pidController: PIDController.pidReducer,
+  schedule: Scheduler.reducer
 });
 var store = redux.createStore(rootReducer);
 
-console.log('redux initialized.')
+console.log('redux initialized.', JSON.stringify(store.getState()))
 
 Temperatures.startSampling(store, ds1820.readTemperature);
 
@@ -118,6 +120,14 @@ app.post('/temperature', function(req, res) {
     res.status(400).send('target should be between 4 and 25 degrees celcius.')
   }
 })
+
+app.get('/schedule.json', function(req, res) {
+  var state = store.getState().schedule;
+
+  res.json(state.toArray());
+
+})
+
 
 console.log('Routes created.');
 

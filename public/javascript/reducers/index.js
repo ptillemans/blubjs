@@ -51,11 +51,11 @@ function actuals(state = initialActuals, action) {
 }
 
 
-var todoApp = combineReducers({
+var reducers = combineReducers({
   samples,
   target,
   actuals
 })
 
-export default todoApp
+export default reducers
 

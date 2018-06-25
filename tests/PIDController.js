@@ -40,9 +40,6 @@ test('reduce set initial state', function(t) {
 
   var actual;
 
-  console.log("test : ", TEST_DATE.getTime())
-  console.log("Date.now(): ", Date.now())
-
   actual = pid.pidReducer(undefined, {});
 
   var expected = TEST_STATE;
