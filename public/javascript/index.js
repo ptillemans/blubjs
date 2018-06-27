@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import blubApp from './reducers';
 import App from './components/App';
-import {updateSamplesAction} from './actions';
+import {updateSamplesAction, updateScheduleAction} from './actions';
 
 // enable jquery for bootstrap helpers
 global.$ = global.jQuery = $;
@@ -26,7 +26,15 @@ function fetchSamples(store) {
   });
 }
 
+function fetchSchedule(store) {
+  $.getJSON('/schedule.json', (data) => {
+    let action = updateScheduleAction(data);
+    store.dispatch(action);
+  });
+}
+
 fetchSamples(store);
+fetchSchedule(store);
 setInterval(function() {
   console.log('fetching new data');
   fetchSamples(store);

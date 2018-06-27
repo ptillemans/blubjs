@@ -18,7 +18,7 @@ function target(state = 14, action ) {
         console.log('received new data');
         return action.payload;
       case t.ADD_SAMPLES:
-        console.log('reducer target.add_samples:' + JSON.stringify(R.last(action.payload)))
+        console.log('reducer target.add_samples:' + JSON.stringify(R.last(action.payload)));
         const {target} = R.last(action.payload);
         return target || state;
       default:
@@ -31,7 +31,7 @@ const initialActuals = {
   target: 14,
   actual: 20,
   heater: "off"
-}
+};
 
 function actuals(state = initialActuals, action) {
   switch (action.type) {
@@ -39,12 +39,21 @@ function actuals(state = initialActuals, action) {
       return { ...state, target: action.payload};
     case t.ADD_SAMPLES:
       if (action.payload === []) return state;
-      console.log(`actuals.add_samples: ${action.payload}`)
-      const {target, actual, heater_on} = R.last(action.payload);
-      console.log(`actuals.add_samples: ${target}, ${actual}, ${heater_on}.`)
+      const {actual, heater_on} = R.last(action.payload);
       return ({ ...state,
         actual: actual,
         heater: heater_on});
+    default:
+      return state;
+  }
+}
+
+// schedule reducer
+function schedule(state = [], action) {
+  console.log("schedule action: ", JSON.stringify(action));
+  switch (action.type) {
+    case t.SET_SCHEDULE:
+      return action.payload;
     default:
       return state;
   }
@@ -54,8 +63,9 @@ function actuals(state = initialActuals, action) {
 var reducers = combineReducers({
   samples,
   target,
-  actuals
-})
+  actuals,
+  schedule
+});
 
-export default reducers
+export default reducers;
 

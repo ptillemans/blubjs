@@ -5,8 +5,6 @@ const MAX_POINTS = 60;
 
 
 function getData(data) {
-  console.log('getData');
-  console.log(data);
   return {
     labels: data.map(o => new Date(o.ts)),
     datasets:[
@@ -66,7 +64,6 @@ const mapDispatchToProps = dispatch => {
   return { }
 }
 
-console.log(Chart)
 const TemperatureChart = connect(mapStateToProps,mapDispatchToProps)(Chart)
 
 export default TemperatureChart
