@@ -10,7 +10,7 @@ function getData(data) {
     datasets:[
       {
         label: 'Temperature',
-        data: data.map(o => o.actual.toFixed(2)),
+        data: data.map(o => if (o.actual) o.actual.toFixed(2) else 0),
         borderWidth: 1,
         borderColor: 'rgba(0,0,255,1)',
         fill: false
@@ -26,7 +26,7 @@ function getData(data) {
       {
         label: 'Heater',
         lineTension: 0,
-        data: data.map(o => (o.heater_on * o.target).toFixed(2)),
+        data: data.map(o => if (o.heater_on) o.target.toFixed(2) else 0),
         borderWidth: 1,
         borderColor: 'rgba(255,0,0,1)',
         backgroundColor: 'rgba(255,0,0,0.2)',

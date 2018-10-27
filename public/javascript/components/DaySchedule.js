@@ -9,11 +9,22 @@ const daysOfWeek = [ "Zondag"
                    , "Vrijdag"
                    , "Zaterdag"];
 
+
+const formatTwoDigits = (number) => ("0" + number).slice(-2);
+
+const renderTime = (time) => {
+  const mins = (time / 60)>>0;
+  const h = formatTwoDigits((mins / 60) >> 0);
+  const m = formatTwoDigits(mins % 60);
+  return `${h}:${m}`;
+};
+
+
 const renderPoint = (time, temperature) => {
   console.log("renderPoint:", time, temperature);
   return (
   <div key={time}>
-    <p><b>{time}</b> : {temperature}</p>
+    <p><b>{renderTime(time)}</b> : {temperature}</p>
   </div>
   );
 };
