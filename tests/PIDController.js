@@ -147,4 +147,27 @@ test('test control signal', function(t) {
   t.equal(getControlAfterUpdate(state.set('k_p', 1).set('k_d', 1).set('k_i', 1)),
     1 + 2 + 3, 'sum of all when all 1');
 
-})
+});
+
+test('test heater turns on and off', function(t) {
+  t.plan(2);
+  
+  var state = Immutable.fromJS({
+    history: [{
+      error: 0, // 20 - 19 - (-1) == 2
+      sum: 0, // 20 - 19 + 2 == 3
+    }],
+    target: 20,
+    k_p: 1,
+    k_d: 0,
+    k_i: 0,
+  });
+  
+  var addTempAction = temperature.createAddTemperatureAction(19);
+  var nState = pid.pidReducer(state, addTempAction);
+  t.ok(nState.get('heater_on'), "heater should be on when cold");
+ 
+  addTempAction = temperature.createAddTemperatureAction(21);
+  nState = pid.pidReducer(state, addTempAction)
+  t.notOk(nState.get('heater_on'), "heater should be off when hot");
+});

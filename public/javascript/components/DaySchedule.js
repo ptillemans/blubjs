@@ -21,7 +21,6 @@ const renderTime = (time) => {
 
 
 const renderPoint = (time, temperature) => {
-  console.log("renderPoint:", time, temperature);
   return (
   <div key={time}>
     <p><b>{renderTime(time)}</b> : {temperature}</p>

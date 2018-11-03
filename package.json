@@ -4,6 +4,10 @@
   "description": "Thermostaat with web interface",
   "main": "main.js",
   "dependencies": {
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babelify": "^8.0.0",
     "bluebird": "^3.4.7",
     "body-parser": "^1.15.2",
     "bootstrap": "^3.3.7",

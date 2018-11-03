@@ -21,6 +21,7 @@ var ds1820 = require("./lib/ds1820");
 var Temperatures = require("./lib/Temperatures");
 var PIDController = require("./lib/PIDController")
 var Scheduler = require("./lib/Scheduler");
+var Relay = require("./lib/Relay");
 
 ds1820.initDriver();
 
@@ -41,7 +42,14 @@ var rootReducer = redux.combineReducers({
 });
 var store = redux.createStore(rootReducer);
 
-console.log('redux initialized.', JSON.stringify(store.getState()))
+function updateHeaterRelay() {
+  var heater_on = store.getState().pidController.get('heater_on');
+  Relay.relay1(heater_on);  
+}
+
+store.subscribe(updateHeaterRelay);
+
+console.log('redux initialized.', JSON.stringify(store.getState()));
 
 Temperatures.startSampling(store, ds1820.readTemperature);
 
