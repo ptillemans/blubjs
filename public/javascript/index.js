@@ -1,5 +1,4 @@
-import $ from 'jquery';
-import React from 'react';
+import $ from 'jquery/dist/jquery.min';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';

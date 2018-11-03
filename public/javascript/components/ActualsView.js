@@ -8,7 +8,7 @@ const actualsView = ({actual, target, heater}) => (
     <span className="col-xs-offset-1 col-xs-4 label label-primary">
       {actual.toFixed(2)} ℃
     </span>
-    <span className="col-xs-offset-1 col-xs-3 label label-danger">
+    <span className={`col-xs-offset-1 col-xs-3 label ${heater === "on" ? "label-danger" : "label-primary"}`}>
       Heater {heater}
     </span>
   </h1>
