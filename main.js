@@ -129,6 +129,8 @@ app.post('/schedule', jsonParser, function(req, res) {
     const data = req.body;
     console.log('POST schedule: ' + JSON.stringify(data));
     store.dispatch(Scheduler.createUpdateSchedule(data));
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(store.getState()['schedule']));
 });
 
 console.log('Routes created.');
