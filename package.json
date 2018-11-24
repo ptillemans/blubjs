@@ -15,7 +15,7 @@
     "clockpicker": "0.0.7",
     "cron": "^1.2.1",
     "errorhandler": "^1.5.0",
-    "express": "^4.14.0",
+    "express": "^4.16.4",
     "immutable": "^3.8.2",
     "jquery": "^3.2.1",
     "node-cron": "^1.1.2",

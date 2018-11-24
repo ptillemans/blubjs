@@ -124,7 +124,8 @@ app.get('/schedule.json', function(req, res) {
 });
 
 app.post('/schedule', function(req, res) {
-    var data = JSON.parse(req.body);
+    const data = req.json;
+    console.log('POST schedule: ' + JSON.stringify(data));
     store.dispatch(Scheduler.createUpdateSchedule(data));
 });
 
