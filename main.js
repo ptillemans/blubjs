@@ -104,7 +104,7 @@ app.post('/temperature', function(req, res) {
   var target = Number(data.target);
   if (target > 4 && target <= 25) {
 
-    store.dispatch(PIDController.createSetTargetAction(data.target))
+    store.dispatch(PIDController.createSetTargetAction(data.target));
 
     var resp = Object.assign(data, {
       accepted: true
@@ -114,15 +114,19 @@ app.post('/temperature', function(req, res) {
   } else {
     res.status(400).send('target should be between 4 and 25 degrees celcius.')
   }
-})
+});
 
 app.get('/schedule.json', function(req, res) {
   var state = store.getState().schedule;
 
   res.json(state.toArray());
 
-})
+});
 
+app.post('/schedule', function(req, res) {
+    var data = JSON.parse(req.body);
+    store.dispatch(Scheduler.createUpdateSchedule(data));
+});
 
 console.log('Routes created.');
 
