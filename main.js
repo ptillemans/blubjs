@@ -42,11 +42,13 @@ Scheduler.startScheduler(store);
 
 // Configuration
 app.set('view engine', viewEngine);
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: false
-}));
 app.use(serveStatic(__dirname + '/public'));
+
+// create application/json parser
+var jsonParser = bodyParser.json()
+
+// create application/x-www-form-urlencoded parser
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 console.log('app configured.');
 
@@ -98,7 +100,7 @@ app.get('/temperature.json', function(req, res) {
   res.json(data);
 });
 
-app.post('/temperature', function(req, res) {
+app.post('/temperature', jsonParser, function(req, res) {
   var data = req.body;
   console.log('post temperature:' + JSON.stringify(data));
   var target = Number(data.target);
@@ -123,8 +125,8 @@ app.get('/schedule.json', function(req, res) {
 
 });
 
-app.post('/schedule', function(req, res) {
-    const data = req.json;
+app.post('/schedule', jsonParser, function(req, res) {
+    const data = req.body;
     console.log('POST schedule: ' + JSON.stringify(data));
     store.dispatch(Scheduler.createUpdateSchedule(data));
 });
