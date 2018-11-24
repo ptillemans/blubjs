@@ -1,15 +1,3 @@
-// *******************************************************
-// expressjs template
-//
-// assumes: npm install express
-// defaults to jade engine, install others as needed
-//
-// assumes these subfolders:
-//   public/
-//   public/javascripts/
-//   public/stylesheets/
-//   views/
-//
 var express = require('express');
 var http = require('http');
 var bodyParser = require('body-parser');
@@ -22,8 +10,6 @@ var Temperatures = require("./lib/Temperatures");
 var PIDController = require("./lib/PIDController")
 var Scheduler = require("./lib/Scheduler");
 var Relay = require("./lib/Relay");
-
-ds1820.initDriver();
 
 var app = module.exports = express();
 var server = http.createServer(app);
@@ -52,6 +38,7 @@ store.subscribe(updateHeaterRelay);
 console.log('redux initialized.', JSON.stringify(store.getState()));
 
 Temperatures.startSampling(store, ds1820.readTemperature);
+Scheduler.startScheduler(store);
 
 // Configuration
 app.set('view engine', viewEngine);

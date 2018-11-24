@@ -9,9 +9,6 @@ td.replace(ds1820, 'readTemperatureSensorFile', function() {
     return Promise.resolve(CONTENT);
 });
 
-ds1820.initDriver();
-
-
 test("read sensor file", function(t) {
   t.plan(2);
 
