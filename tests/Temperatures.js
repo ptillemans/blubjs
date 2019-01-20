@@ -5,6 +5,7 @@ var _ = require('lodash');
 var redux = require('redux');
 var td = require('testdouble');
 var timers = require('testdouble-timers').default;
+var Promise = require('bluebird');
 
 timers.use(td);
 
@@ -14,10 +15,10 @@ test('action creator for adding temperatures', function(t) {
   var clock = td.timers();
 
   var expected = 25.0;
-  var action = Temperatures.addTemperature(expected);
+  var action = Temperatures.createAddTemperatureAction(expected);
   var actual = action.payload;
 
-  t.equal('ADD_TEMPERATURE', action.type);
+  t.equal(action.type, 'ADD_TEMPERATURE');
   t.equal(actual.get('temp'), expected, "Expected given temperature as payload");
   t.equal(actual.get('ts'), Date.now(), "Expected current timestamp on payload");
 
@@ -36,13 +37,16 @@ test('reducer returns initialstate at first', function(t) {
 test('reducer adds temperature to back of list', function(t) {
   t.plan(2);
 
-  var sample = {temp: 0.0, ts: 0};
+  var sample = {
+    temp: 0.0,
+    ts: 0
+  };
   var state = Immutable.fromJS({
-    temperatureList: [ sample, sample, sample]
+    temperatureList: [sample, sample, sample]
   });
 
   var expected = 25.0;
-  var action = Temperatures.addTemperature(expected);
+  var action = Temperatures.createAddTemperatureAction(expected);
   var newState = Temperatures.temperatureReducer(state, action);
   var actual = newState.get('temperatureList');
   console.log(actual);
@@ -51,6 +55,7 @@ test('reducer adds temperature to back of list', function(t) {
 
 });
 
+
 test('reducer only keeps 24h worth of temperatures', function(t) {
   t.plan(1);
 
@@ -58,19 +63,22 @@ test('reducer only keeps 24h worth of temperatures', function(t) {
 
   var state = undefined;
 
-  var readings = _.times(nPoints + 1, _.constant(20.0) );
+  var readings = _.times(nPoints + 10, _.constant(20.0));
   var actual = _(readings)
-      .map(Temperatures.addTemperature)
+    .map(Temperatures.createAddTemperatureAction)
     .reduce(Temperatures.temperatureReducer, state);
 
   t.equal(actual.get('temperatureList').count(), nPoints);
 });
 
+
 test('sample temperature method measure 12 times per minute', function(t) {
   t.plan(12);
 
-
-  var measureFunction = function() { t.pass(); return Promise.resolve(25.0);  };
+  var measureFunction = function() {
+    t.pass();
+    return Promise.resolve(25.0);
+  };
   var store = redux.createStore(Temperatures.temperatureReducer);
 
   var time = Date.now();

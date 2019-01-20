@@ -3,10 +3,11 @@ var ds1820 = require("../lib/ds1820");
 var td = require('testdouble');
 var Promise = require('bluebird');
 
-td.replace(ds1820, 'readTemperatureSensorFile', function() {
-  return Promise.resolve("blablablablabla\nblablablablbla t=22123");
-});
+const CONTENT = "blablablablabla\nblablablablbla t=22123";
 
+td.replace(ds1820, 'readTemperatureSensorFile', function() {
+    return Promise.resolve(CONTENT);
+});
 
 test("read sensor file", function(t) {
   t.plan(2);
@@ -24,8 +25,8 @@ test("read sensor file", function(t) {
 
 test("read temperature and test if about room temperature", function(t) {
   t.plan(2);
-
-  ds1820.readTemperature()
+  
+  ds1820.parseTemperature(CONTENT)
     .then(function(temp) {
       t.ok(temp < 25.0, "Temperature should be lower than 25 degrees, but was " + temp);
       t.ok(temp > 15.0, "Temperature should be higher than 15 degrees, but was " + temp);

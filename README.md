@@ -10,40 +10,61 @@ this project uses the Cloud9 tool in the vanilla image.
 
 ## DS-18B20 sensor
 
-I used for this project a DS-18B20 sensor. I ordered a couple of waterproof 
+I used for this project a DS-18B20 sensor. I ordered a couple of waterproof
 sensors with a sturdy long cable.
 
 Hooked the output up to P9.12.
 
+Then enable the wire1 driver during boot. Edit */boot/uEnv.txt* to uncomment
+*uboot_overlay_addr0*:
+
+    ###
+    ###Overide capes with eeprom
+    uboot_overlay_addr0=/lib/firmware/BB-W1-P9.12-00A0.dtbo
+    #uboot_overlay_addr1=/lib/firmware/<file1>.dtbo
+    #uboot_overlay_addr2=/lib/firmware/<file2>.dtbo
+
+and add the standard *BB-W1-P9.12-00A0.dtbo* overlay.
+
+Then reboot.
+
+    $ sudo modprobe gpio
+    $ sudo modprobe w1-gpio
+    $ ls /sys/bus/w1/devices/
+    28-051680f7b2ff  w1_bus_master1
+    
+The *28-xxxxx* indicates the sensor is recognized.
+
+
 ## 2-Relay Module
 
-I ordered on e-bay a couple of relay boards for the arduino. They have a 
+I ordered on e-bay a couple of relay boards for the arduino. They have a
 darlington to convert a digital output to a current to activate the relay.
 
 It are 5V relay, but they seem to reliably operate with the 3V3 coming from the
-pin of the BBB. I might rewire it to use the 5V to save some power dissipation 
+pin of the BBB. I might rewire it to use the 5V to save some power dissipation
 in the voltage regulator.
 
-The relays are hooked up to P9.14 and P9.16 as I am not planning to use the PWM 
+The relays are hooked up to P9.14 and P9.16 as I am not planning to use the PWM
 outputs at the moment.
 
 # Development
 
-## Testing 
+## Testing
 
 We use the *tape* testing framework for lightweight testing on this project.2-Relay Module
 
     babel-node test.js | faucet
-    
-or 
+
+or
 
     npm run test
-    
+
 to test.
 
-## Promises 
+## Promises
 
-Node v0.10 does not come with native promises. This is a problem, as once one 
+Node v0.10 does not come with native promises. This is a problem, as once one
 tasted from promises it is difficult to go back to callbacks.
 
 The *bluebird* library is used here as it allows to *promisify* the interfaces.
@@ -70,17 +91,17 @@ rounded library for functional programming.
 
 ## node-cron
 
-Any non trivial project needs background jobs, and over the years the bar for 
+Any non trivial project needs background jobs, and over the years the bar for
 being non-trivial gets lower and lower.
 
 Node cron is a simple library using the age-old cron syntax to schedule jobs.
 
-so we can run tasks like 
+so we can run tasks like
 
     var cron = require('cron');
     cronJob = cron.job('*/5 * * * *', function() {/* do something */});
     cronJob.start();
-    
+
 to run a function every 5 seconds. Perfect.
 
 # Notes on rejected technologies

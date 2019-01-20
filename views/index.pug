@@ -1,16 +1,11 @@
+doctype html
 html
   include includes/head.pug
   body
     div(class="container-fluid theme-showcase")
       div(class="jumbotron")
         h1 Blub de thermostaat
-      div(class="row")
-        div(class="col-md-8 graph")
-          canvas#myChart(width="400" height="400")
-          script(src="/javascript/temperatureChart.js")
-        div(class="col-md-4 info")
-          h1
-            span(class="label label-success") #{temperature}℃
-
+      div#root
+        p React stuff comes here
 
     include includes/footer.pug
