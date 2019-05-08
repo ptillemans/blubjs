@@ -17,7 +17,7 @@ Hooked the output up to P9.12.
 
 This requires some bit of extension to the firmware :
 
-    $ dtc -O dtb -o w1-00A0.dtbo -b 0 -@ onewire/DS1820-00A0.dts
+    $ dtc -O dtb -o DS1820-00A0.dtbo -b 0 -@ onewire/DS1820-00A0.dts
     $ sudo cp w1-00A0.dtbo /lib/firmware/
 
 See [Temperature Monitoring with the BBB](http://www.bonebrews.com/temperature-monitoring-with-the-ds18b20-on-a-beaglebone-black/).
