@@ -15,10 +15,9 @@ function samples(state = [], action ) {
 function target(state = 14, action ) {
     switch (action.type) {
       case t.SET_TARGET:
-        console.log('received new data');
+        console.log('received new target: ' + action.payload);
         return action.payload;
       case t.ADD_SAMPLES:
-        console.log('reducer target.add_samples:' + JSON.stringify(R.last(action.payload)));
         const {target} = R.last(action.payload);
         return target || state;
       default:
@@ -50,7 +49,6 @@ function actuals(state = initialActuals, action) {
 
 // schedule reducer
 function schedule(state = [], action) {
-  console.log("schedule action: ", JSON.stringify(action));
   switch (action.type) {
     case t.SET_SCHEDULE:
       return action.payload;

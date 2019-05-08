@@ -1,15 +1,3 @@
-// *******************************************************
-// expressjs template
-//
-// assumes: npm install express
-// defaults to jade engine, install others as needed
-//
-// assumes these subfolders:
-//   public/
-//   public/javascripts/
-//   public/stylesheets/
-//   views/
-//
 var express = require('express');
 var http = require('http');
 var bodyParser = require('body-parser');
@@ -21,8 +9,7 @@ var ds1820 = require("./lib/ds1820");
 var Temperatures = require("./lib/Temperatures");
 var PIDController = require("./lib/PIDController")
 var Scheduler = require("./lib/Scheduler");
-
-ds1820.initDriver();
+var Relay = require("./lib/Relay");
 
 var app = module.exports = express();
 var server = http.createServer(app);
@@ -41,17 +28,27 @@ var rootReducer = redux.combineReducers({
 });
 var store = redux.createStore(rootReducer);
 
-console.log('redux initialized.', JSON.stringify(store.getState()))
+function updateHeaterRelay() {
+  var heater_on = store.getState().pidController.get('heater_on');
+  Relay.relay1(heater_on);  
+}
+
+store.subscribe(updateHeaterRelay);
+
+console.log('redux initialized.', JSON.stringify(store.getState()));
 
 Temperatures.startSampling(store, ds1820.readTemperature);
+Scheduler.startScheduler(store);
 
 // Configuration
 app.set('view engine', viewEngine);
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: false
-}));
 app.use(serveStatic(__dirname + '/public'));
+
+// create application/json parser
+var jsonParser = bodyParser.json()
+
+// create application/x-www-form-urlencoded parser
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 console.log('app configured.');
 
@@ -103,13 +100,13 @@ app.get('/temperature.json', function(req, res) {
   res.json(data);
 });
 
-app.post('/temperature', function(req, res) {
+app.post('/temperature', jsonParser, function(req, res) {
   var data = req.body;
   console.log('post temperature:' + JSON.stringify(data));
   var target = Number(data.target);
   if (target > 4 && target <= 25) {
 
-    store.dispatch(PIDController.createSetTargetAction(data.target))
+    store.dispatch(PIDController.createSetTargetAction(data.target));
 
     var resp = Object.assign(data, {
       accepted: true
@@ -119,15 +116,22 @@ app.post('/temperature', function(req, res) {
   } else {
     res.status(400).send('target should be between 4 and 25 degrees celcius.')
   }
-})
+});
 
 app.get('/schedule.json', function(req, res) {
   var state = store.getState().schedule;
 
   res.json(state.toArray());
 
-})
+});
 
+app.post('/schedule', jsonParser, function(req, res) {
+    const data = req.body;
+    console.log('POST schedule: ' + JSON.stringify(data));
+    store.dispatch(Scheduler.createUpdateSchedule(data));
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(store.getState()['schedule']));
+});
 
 console.log('Routes created.');
 
