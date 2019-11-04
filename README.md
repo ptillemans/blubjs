@@ -15,25 +15,16 @@ sensors with a sturdy long cable.
 
 Hooked the output up to P9.12.
 
-Then enable the wire1 driver during boot. Edit */boot/uEnv.txt* to uncomment
-*uboot_overlay_addr0*:
+This requires some bit of extension to the firmware :
 
-    ###
-    ###Overide capes with eeprom
-    uboot_overlay_addr0=/lib/firmware/BB-W1-P9.12-00A0.dtbo
-    #uboot_overlay_addr1=/lib/firmware/<file1>.dtbo
-    #uboot_overlay_addr2=/lib/firmware/<file2>.dtbo
+    $ dtc -O dtb -o DS1820-00A0.dtbo -b 0 -@ onewire/DS1820-00A0.dts
+    $ sudo cp w1-00A0.dtbo /lib/firmware/
 
-and add the standard *BB-W1-P9.12-00A0.dtbo* overlay.
+See [Temperature Monitoring with the BBB](http://www.bonebrews.com/temperature-monitoring-with-the-ds18b20-on-a-beaglebone-black/).
 
-Then reboot.
+To enable the kernel driver, do:
 
-    $ sudo modprobe gpio
-    $ sudo modprobe w1-gpio
-    $ ls /sys/bus/w1/devices/
-    28-051680f7b2ff  w1_bus_master1
-    
-The *28-xxxxx* indicates the sensor is recognized.
+    $ echo DS1820 >/sys/devices/bone_capemgr.9/slots
 
 
 ## 2-Relay Module
