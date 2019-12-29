@@ -63,20 +63,21 @@ test('reducer only keeps 24h worth of temperatures', function(t) {
 
   var state = undefined;
 
-  var readings = _.times(nPoints + 10, _.constant(20.0));
+  var readings = _.times(nPoints * 3, _.constant(20.0));
   var actual = _(readings)
     .map(Temperatures.createAddTemperatureAction)
     .reduce(Temperatures.temperatureReducer, state);
 
-  t.equal(actual.get('temperatureList').count(), nPoints);
+  t.equal(actual.get('temperatureList').count(), nPoints, "Expected to have 24h worth of temperatures.");
 });
 
 
 test('sample temperature method measure 12 times per minute', function(t) {
-  t.plan(12);
+  t.plan(1);
+  var nPoints = 0;
 
   var measureFunction = function() {
-    t.pass();
+    nPoints += 1;
     return Promise.resolve(25.0);
   };
   var store = redux.createStore(Temperatures.temperatureReducer);
@@ -87,7 +88,11 @@ test('sample temperature method measure 12 times per minute', function(t) {
 
   Temperatures.startSampling(store, measureFunction);
 
-  clock.tick(60000);
-
+  for (var i=0; i <= 60; i++) {
+    clock.tick(1000);
+  }
+  
   td.reset();
+  
+  t.equal(nPoints, 12, 'Expected 12 measure points per minute');
 });
