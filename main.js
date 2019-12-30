@@ -10,6 +10,7 @@ var Temperatures = require("./lib/Temperatures");
 var PIDController = require("./lib/PIDController")
 var Scheduler = require("./lib/Scheduler");
 var Relay = require("./lib/Relay");
+var kafka = require("./lib/kafka")
 
 var app = module.exports = express();
 var server = http.createServer(app);
@@ -21,12 +22,20 @@ var env = process.env.NODE_ENV || 'development';
 var redux = require('redux');
 
 
+const kafkaMiddleware = (store) => (next) => (action) => {
+  const message = JSON.stringify(action);
+  kafka.writeMessage(message);
+  next(action)
+}
+
 var rootReducer = redux.combineReducers({
   temperature: Temperatures.temperatureReducer,
   pidController: PIDController.pidReducer,
   schedule: Scheduler.reducer
 });
-var store = redux.createStore(rootReducer);
+var store = redux.createStore(rootReducer,
+  redux.applyMiddleware(kafkaMiddleware)
+);
 
 function updateHeaterRelay() {
   var heater_on = store.getState().pidController.get('heater_on');
