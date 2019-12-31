@@ -3,14 +3,14 @@ var http = require('http');
 var bodyParser = require('body-parser');
 var serveStatic = require('serve-static');
 var errorHandler = require('errorhandler');
-var Promise = require('bluebird');
 
 var ds1820 = require("./lib/ds1820");
 var Temperatures = require("./lib/Temperatures");
-var PIDController = require("./lib/PIDController")
+var PIDController = require("./lib/PIDController");
 var Scheduler = require("./lib/Scheduler");
 var Relay = require("./lib/Relay");
-var kafka = require("./lib/kafka")
+var Kafka = require("./lib/Kafka");
+var Mqtt = require("./lib/Mqtt");
 
 var app = module.exports = express();
 var server = http.createServer(app);
@@ -24,7 +24,7 @@ var redux = require('redux');
 
 const kafkaMiddleware = (store) => (next) => (action) => {
   const message = JSON.stringify(action);
-  kafka.writeMessage(message);
+  Kafka.writeMessage(message);
   next(action)
 }
 
@@ -37,13 +37,19 @@ var store = redux.createStore(rootReducer,
   redux.applyMiddleware(kafkaMiddleware)
 );
 
+Mqtt.connect(store, 'nas.snamellit.com');
+
 function updateHeaterRelay() {
-  var heater_on = store.getState().pidController.get('heater_on');
+  var heater_on = false;
+  store.getState().pidController.forEach((v, k) => {
+    console.log(`updateHeaterRelay: ${k}: ${v}`);
+    heater_on = heater_on || v.get('history').last().get('heater_on');
+  });
+  console.log(`heater: ${heater_on}`)
   Relay.relay1(heater_on);  
 }
 
 store.subscribe(updateHeaterRelay);
-
 console.log('redux initialized.', JSON.stringify(store.getState()));
 
 Temperatures.startSampling(store, ds1820.readTemperature);
@@ -62,7 +68,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
 console.log('app configured.');
 
 app.get('/', function(req, res) {
-  var state = store.getState().pidController;
+  var state = store.getState().pidController.get('internal');
   var sample = state.get('history').last();
   res.render('index', {
     title: 'Blub',
@@ -73,7 +79,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/temperature.json', function(req, res) {
-  var state = store.getState().pidController;
+  var state = store.getState().pidController.get('internal');
   var minuteMeasured = function(o) {
     return 60000 * Math.floor(o.get('ts') / 60000);
   };
@@ -81,12 +87,11 @@ app.get('/temperature.json', function(req, res) {
     var ts = o.get('ts');
     var beginning = Date.now() - 24*60*60*1000;
     return ts > beginning;
-  }
+  };
 
   var averageSamples = function(keys) {
     return function(v, k) {
       var cnt = v.count();
-      var averages = {};
       var sum = (a, b) => a + b;
       var avg = (key) => v.map((o) => o.get(key))
         .reduce(sum, 0) / cnt;
@@ -98,8 +103,8 @@ app.get('/temperature.json', function(req, res) {
         ts: k
       });
     };
-  }
-  var raw = state.get('history')
+  };
+  var raw = state.get('history');
   var data = raw
     .filter(within24h)
     .groupBy(minuteMeasured)
