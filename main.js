@@ -18,7 +18,8 @@ function createStore(initialState, pendingEvents) {
   var rootReducer = redux.combineReducers({
     temperature: Temperatures.temperatureReducer,
     pidController: PIDController.pidReducer,
-    schedule: Scheduler.reducer
+    schedule: Scheduler.reducer,
+    heater: Heater.reducer,
   });
   
   var store = redux.createStore(rootReducer,
@@ -31,7 +32,8 @@ function createStore(initialState, pendingEvents) {
   }
   
   store.subscribe(() => Kafka.saveState(store));
-  store.subscribe(() => Heater.updateHeaterRelay(store)); 
+  store.subscribe(() => Heater.updateHeaterRelay(store));
+  store.subscribe(() => Heater.updateRelay(store)); 
   
   Mqtt.connect(store, 'nas.snamellit.com');
   Temperatures.startSampling(store, ds1820.readTemperature);
