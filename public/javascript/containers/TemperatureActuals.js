@@ -10,10 +10,11 @@ const mapStateToProps = (state) =>({
 });
   
 const mapDispatchToProps = dispatch => {
-  return { }
-}
+  return { 
+    
+  };
+};
 
-console.log(Chart)
-const TemperatureChart = connect(mapStateToProps,mapDispatchToProps)(ActualsView)
+const TemperatureActuals = connect(mapStateToProps,mapDispatchToProps)(ActualsView);
 
-export default TemperatureChart
+export default TemperatureActuals;
