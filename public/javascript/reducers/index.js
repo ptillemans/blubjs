@@ -38,10 +38,11 @@ function actuals(state = initialActuals, action) {
       return { ...state, target: action.payload};
     case t.ADD_SAMPLES:
       if (action.payload === []) return state;
-      const {actual, heater_on} = R.last(action.payload);
+      const {internal, hendrik, heater} = R.last(R.filter(t => t.internal, action.payload));
       return ({ ...state,
-        actual: actual,
-        heater: heater_on});
+        actual: internal,
+        hendrik: hendrik,
+        heater: heater});
     default:
       return state;
   }

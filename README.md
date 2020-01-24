@@ -75,11 +75,6 @@ Good experience with Redux. Want more of it, this time server-side.
 To do the asynchronous processing, but keep the codebase *pure* we immediately
 add  the thunk-middleware to evaluate functions in the middleware.
 
-## Lodash
-
-Lodash comes as a *redux* dependency, so we may as well use it. It is a well
-rounded library for functional programming.
-
 ## node-cron
 
 Any non trivial project needs background jobs, and over the years the bar for

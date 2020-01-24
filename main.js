@@ -16,7 +16,6 @@ const kafkaMiddleware = (store) => (next) => (action) => {
 
 function createStore(initialState, pendingEvents) {
   var rootReducer = redux.combineReducers({
-    temperature: Temperatures.temperatureReducer,
     pidController: PIDController.pidReducer,
     schedule: Scheduler.reducer,
     heater: Heater.reducer,
@@ -41,12 +40,12 @@ function createStore(initialState, pendingEvents) {
   
   var server = app.createServer(__dirname + '/public');
   app.addRoutes(server, store);
-  app.startServer(server, 8000);
+  app.startServer(server, 6000);
 
   return store;
 }
 
-console.log('Starting...')
+console.log('Starting...');
 Kafka.loadState(createStore);
 
 

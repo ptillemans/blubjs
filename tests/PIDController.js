@@ -23,8 +23,8 @@ var TEST_STATE = Immutable.fromJS({
     }],
     target: 14,
     k_p: 1.5,
-    k_d: 12,
-    k_i: 0.5,
+    k_d: 50,
+    k_i: 0.25,
   }
 });
 

@@ -9,10 +9,17 @@ function getData(data) {
     labels: data.map(o => new Date(o.ts)),
     datasets:[
       {
-        label: 'Temperature',
-        data: data.map(o => o.actual ? o.actual.toFixed(2) : 0),
+        label: 'Badkamer',
+        data: data.map(o => o.internal ? o.internal.toFixed(2) : null),
         borderWidth: 1,
         borderColor: 'rgba(0,0,255,1)',
+        fill: false
+      },
+      {
+        label: 'Hendrik',
+        data: data.map(o => o.hendrik ? o.hendrik.toFixed(2) : null),
+        borderWidth: 1,
+        borderColor: 'rgba(0,255,255,1)',
         fill: false
       },
       {
