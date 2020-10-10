@@ -8,7 +8,7 @@ const TargetSlider = ({target, updateTarget}) => (
         <div>
             <input type="range"
                    min="12" max="25"
-                   defaultValue={target}
+                   value={target}
                    onChange={updateTarget}
                    className="slider"
                    id="targetRange"/>

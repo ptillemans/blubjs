@@ -18,7 +18,9 @@ function target(state = 14, action ) {
         console.log('received new target: ' + action.payload);
         return action.payload;
       case t.ADD_SAMPLES:
+        console.log("target reducer: " + R.last(action.payload));
         const {target} = R.last(action.payload);
+        console.log("target reducer: target=" + target);
         return target || state;
       default:
         return state;
@@ -38,10 +40,13 @@ function actuals(state = initialActuals, action) {
       return { ...state, target: action.payload};
     case t.ADD_SAMPLES:
       if (action.payload === []) return state;
-      const {internal, hendrik, heater} = R.last(R.filter(t => t.internal, action.payload));
+      let sample = R.last(R.filter(t => t.internal, action.payload));
+      console.log("actuals reducer: " + JSON.stringify(sample));
+      const {internal, hendrik, target, heater} = sample;
       return ({ ...state,
         actual: internal,
         hendrik: hendrik,
+        target: target,
         heater: heater});
     default:
       return state;

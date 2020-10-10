@@ -10,7 +10,9 @@ import {updateSamplesAction, updateScheduleAction} from './actions';
 // enable jquery for bootstrap helpers
 global.$ = global.jQuery = $;
 
-let store = createStore(blubApp);
+let store = createStore(blubApp,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 
 render(
   <Provider store={store}>
