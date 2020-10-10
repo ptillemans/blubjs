@@ -25,22 +25,30 @@ function createStore(initialState, pendingEvents) {
     initialState, 
     redux.applyMiddleware(kafkaMiddleware)
   );
+  console.log("redux store online.");
   
   if (pendingEvents) {
+    console.log("applying saved events");
     pendingEvents.forEach(ev => store.dispatch(ev));
   }
+  console.log("state ready.");
   
   store.subscribe(() => Kafka.saveState(store));
   store.subscribe(() => Heater.updateHeaterRelay(store));
   store.subscribe(() => Heater.updateRelay(store)); 
+  console.log("store suscriptions registered.")
   
   Mqtt.connect(store, 'nas.snamellit.com');
+  console.log("Mqtt coneected");
+  
   Temperatures.startSampling(store, ds1820.readTemperature);
   Scheduler.startScheduler(store);
+  console.log("Temperature sampling active.");
   
   var server = app.createServer(__dirname + '/public');
   app.addRoutes(server, store);
-  app.startServer(server, 6000);
+  app.startServer(server, 8000);
+  console.log("Server started");
 
   return store;
 }
