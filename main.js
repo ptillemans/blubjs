@@ -14,7 +14,16 @@ const kafkaMiddleware = (store) => (next) => (action) => {
   next(action);
 };
 
+var storeCreated = false;
+
 function createStore(initialState, pendingEvents) {
+  
+  if (storeCreated) {
+    console.log("Skip double createStore")
+    return 
+  }
+  storeCreated = true;
+  
   var rootReducer = redux.combineReducers({
     pidController: PIDController.pidReducer,
     schedule: Scheduler.reducer,
@@ -39,7 +48,7 @@ function createStore(initialState, pendingEvents) {
   console.log("store suscriptions registered.")
   
   Mqtt.connect(store, 'nas.snamellit.com');
-  console.log("Mqtt coneected");
+  console.log("Mqtt connected");
   
   Temperatures.startSampling(store, ds1820.readTemperature);
   Scheduler.startScheduler(store);
