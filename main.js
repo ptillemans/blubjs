@@ -3,16 +3,16 @@ var Temperatures = require("./lib/Temperatures");
 var PIDController = require("./lib/PIDController");
 var Scheduler = require("./lib/Scheduler");
 var Heater = require("./lib/Heater");
-var Kafka = require("./lib/Kafka");
+//var Kafka = require("./lib/Kafka");
 var Mqtt = require("./lib/Mqtt");
 var app = require("./lib/app");
 var redux = require('redux');
 
-const kafkaMiddleware = (store) => (next) => (action) => {
-  const message = JSON.stringify(action);
-  Kafka.writeMessage(message);
-  next(action);
-};
+// const kafkaMiddleware = (store) => (next) => (action) => {
+//   const message = JSON.stringify(action);
+//   Kafka.writeMessage(message);
+//   next(action);
+// };
 
 var storeCreated = false;
 
@@ -31,8 +31,8 @@ function createStore(initialState, pendingEvents) {
   });
   
   var store = redux.createStore(rootReducer,
-    initialState, 
-    redux.applyMiddleware(kafkaMiddleware)
+    initialState
+    //, redux.applyMiddleware(kafkaMiddleware)
   );
   console.log("redux store online.");
   
@@ -42,13 +42,13 @@ function createStore(initialState, pendingEvents) {
   }
   console.log("state ready.");
   
-  store.subscribe(() => Kafka.saveState(store));
+//  store.subscribe(() => Kafka.saveState(store));
   store.subscribe(() => Heater.updateHeaterRelay(store));
   store.subscribe(() => Heater.updateRelay(store)); 
   console.log("store suscriptions registered.")
   
   Mqtt.connect(store, 'nas.snamellit.com');
-  console.log("Mqtt connected");
+  console.log("Mqtt should have been connected.");
   
   Temperatures.startSampling(store, ds1820.readTemperature);
   Scheduler.startScheduler(store);
@@ -63,7 +63,7 @@ function createStore(initialState, pendingEvents) {
 }
 
 console.log('Starting...');
-Kafka.loadState(createStore);
-
+//Kafka.loadState(createStore);
+createStore(undefined, undefined)
 
 // *******************************************************

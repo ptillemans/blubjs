@@ -42,10 +42,13 @@ function actuals(state = initialActuals, action) {
       if (action.payload === []) return state;
       let sample = R.last(R.filter(t => t.internal, action.payload));
       console.log("actuals reducer: " + JSON.stringify(sample));
-      const {internal, hendrik, target, heater} = sample;
+      const {target, heater} = sample;
+      sample.delete("internal");
+      sample.delete("target");
+      sample.delete("heater");
+      
       return ({ ...state,
-        actual: internal,
-        hendrik: hendrik,
+        temperatures: sample,
         target: target,
         heater: heater});
     default:
