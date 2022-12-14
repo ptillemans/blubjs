@@ -5,13 +5,13 @@ var scheduler = require('../lib/Scheduler');
 
 
 const NEW_SCHEDULE = fromJS([
-    {21600: 20, 79200: 14},
-    {21600: 20, 32400: 14, 57600: 20, 79200: 14},
-    {21600: 20, 32400: 14, 57600: 20, 79200: 14},
-    {21600: 20, 32400: 14, 57600: 20, 79200: 14},
-    {21600: 20, 32400: 14, 57600: 20, 79200: 14},
-    {21600: 20, 32400: 14, 57600: 20, 79200: 14},
-    {21600: 20, 79200: 14}
+    {21600: 20, 79200: 16},
+    {21600: 20, 32400: 16, 57600: 20, 79200: 16},
+    {21600: 20, 32400: 16, 57600: 20, 79200: 16},
+    {21600: 20, 32400: 16, 57600: 20, 79200: 16},
+    {21600: 20, 32400: 16, 57600: 20, 79200: 16},
+    {21600: 20, 32400: 16, 57600: 20, 79200: 16},
+    {21600: 20, 79200: 16}
 ]);
 
 test('the scheduler has 7 days on initialization', function (t) {
@@ -64,7 +64,7 @@ test('the target temperature can be given for sunday late night', function (t) {
 
     let state = NEW_SCHEDULE;
     let actual = scheduler.getTargetTemperature(state, d);
-    let expected = 14;
+    let expected = 16;
 
     t.equal(actual, expected, 'expected to be cold on sunday late night.');
 });
@@ -76,7 +76,7 @@ test('the target temperature can be given for sunday very early', function (t) {
 
     let state = NEW_SCHEDULE;
     let actual = scheduler.getTargetTemperature(state, d);
-    let expected = 14;
+    let expected = 16;
 
     t.equal(actual, expected, 'expected to be cold on sunday early morning.');
 });
@@ -88,7 +88,7 @@ test('the target temperature can be given for monday very early', function (t) {
 
     let state = NEW_SCHEDULE;
     let actual = scheduler.getTargetTemperature(state, d);
-    let expected = 14;
+    let expected = 16;
 
     t.equal(actual, expected, 'expected to be cold on monday early.');
 });
@@ -100,7 +100,7 @@ test('the target temperature can be given for monday noon', function (t) {
 
     let state = NEW_SCHEDULE;
     let actual = scheduler.getTargetTemperature(state, d);
-    let expected = 14;
+    let expected = 16;
 
     t.equal(actual, expected, 'expected to be cold on monday noon.');
 });
