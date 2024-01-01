@@ -18,14 +18,12 @@
     "immutable": "^3.8.2",
     "jquery": "^3.4.1",
     "mqtt": "^3.0.0",
-    "node-rdkafka": "^2.10.1",
     "pug": "^2.0.0-beta6",
     "ramda": "^0.26.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-redux": "^5.1.2",
-    "redux": "^3.7.2",
-    "serve-static": "^1.14.1"
+    "redux": "^3.7.2"
   },
   "devDependencies": {
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
@@ -40,8 +38,8 @@
   "scripts": {
     "test": "node test.js | faucet",
     "build": "cp node_modules/chart.js/dist/Chart.bundle.min.js public/javascript && cp node_modules/bootstrap/dist/css/bootstrap.min.css public/stylesheets",
-    "make": "browserify public/javascript/index.js -o public/bundle.js -d -t [ babelify ]",
-    "watch": "watchify public/javascript/index.js -o public/bundle.js -v -d -t [ babelify ]"
+    "make": "browserify public/javascript/index.js -o public/bundle.js -t [ babelify ]",
+    "watch": "watchify public/javascript/index.js -o public/bundle.js -v -t [ babelify ]"
   },
   "repository": {
     "type": "git",
