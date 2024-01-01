@@ -28,7 +28,7 @@
   "devDependencies": {
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "browserify": "^16.2.3",
-    "faucet": "0.0.1",
+    "faucet": "0.0.4",
     "tape": "^4.12.1",
     "testdouble": "^3.12.5",
     "testdouble-timers": "^0.1.1",
