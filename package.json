@@ -17,8 +17,8 @@
     "font-awesome": "^4.7.0",
     "immutable": "^3.8.2",
     "jquery": "^3.4.1",
-    "mqtt": "^3.0.0",
     "pug": "^3.0.1",
+    "mqtt": "^5.3.4",
     "ramda": "^0.26.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
@@ -33,12 +33,12 @@
     "testdouble": "^3.12.5",
     "testdouble-timers": "^0.1.1",
     "time-enforcer": "0.0.2",
-    "watchify": "^3.9.0"
+    "watchify": "^4.0.0"
   },
   "scripts": {
     "test": "node test.js | faucet",
     "build": "cp node_modules/chart.js/dist/Chart.bundle.min.js public/javascript && cp node_modules/bootstrap/dist/css/bootstrap.min.css public/stylesheets",
-    "make": "browserify public/javascript/index.js -o public/bundle.js -t [ babelify ]",
+    "make": "browserify public/javascript/index.js -o public/bundle.js -g uglifyify -t [ babelify ]",
     "watch": "watchify public/javascript/index.js -o public/bundle.js -v -t [ babelify ]"
   },
   "repository": {

@@ -9,10 +9,6 @@ td.replace(ds1820, 'readTemperatureSensorFile', function() {
     return Promise.resolve(CONTENT);
 });
 
-const dummyReader = func() (string, error) {
-  return CONTENT, nil
-}
-
 test("read sensor file", function(t) {
   t.plan(2);
 
