@@ -29,17 +29,18 @@
   "devDependencies": {
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "browserify": "^16.2.3",
+    "uglifyify": "5.0.2",
     "faucet": "0.0.4",
     "tape": "^4.12.1",
-    "testdouble": "^3.12.5",
-    "testdouble-timers": "^0.1.1",
+    "testdouble": "3.11.0",
+    "testdouble-timers": "0.1.1",
     "time-enforcer": "0.0.2",
     "watchify": "^4.0.0"
   },
   "scripts": {
     "test": "node test.js | faucet",
     "build": "cp node_modules/chart.js/dist/Chart.bundle.min.js public/javascript && cp node_modules/bootstrap/dist/css/bootstrap.min.css public/stylesheets",
-    "make": "browserify public/javascript/index.js -o public/bundle.js -g uglifyify -t [ babelify ]",
+    "make": "browserify public/javascript/index.js -o public/bundle.js -t uglifyify -t [ babelify ]",
     "watch": "watchify public/javascript/index.js -o public/bundle.js -v -t [ babelify ]"
   },
   "repository": {
