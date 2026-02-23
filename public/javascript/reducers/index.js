@@ -63,12 +63,23 @@ function schedule(state = [], action) {
   }
 }
 
+// holiday reducer
+function holiday(state = false, action) {
+  switch (action.type) {
+    case t.SET_HOLIDAY:
+      return action.payload;
+    default:
+      return state;
+      
+  }
+}
 
 var reducers = combineReducers({
   samples,
   target,
   actuals,
-  schedule
+  schedule,
+  holiday,
 });
 
 export default reducers;

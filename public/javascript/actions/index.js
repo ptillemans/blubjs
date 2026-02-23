@@ -13,4 +13,9 @@ export let updateTargetAction = (target) => ({
 export let updateScheduleAction = (data) => ({
     type: t.SET_SCHEDULE,
     payload: data
+});
+
+export let updateHoliday = (data) => ({
+    type: t.SET_HOLIDAY,
+    payload: data
 })

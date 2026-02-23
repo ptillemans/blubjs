@@ -22,6 +22,7 @@ var TEST_STATE = Immutable.fromJS({
       control: 0
     }],
     target: 14,
+    is_holiday: 0,
     k_p: 1.5,
     k_d: 50,
     k_i: 0.25,
@@ -34,9 +35,9 @@ test('action creator for setting target temperature', function(t) {
 
   var action = pid.createSetTargetAction(TARGET_TEMP);
   t.equal(action.type, 'SET_TARGET_TEMPERATURE');
-  t.equal(action.payload.get('sensor'), 'internal')
+  t.equal(action.payload.get('sensor'), 'internal');
   t.equal(action.payload.get('target'), TARGET_TEMP);
-})
+});
 
 test('reduce set initial state', function(t) {
   t.plan(1);
@@ -45,8 +46,8 @@ test('reduce set initial state', function(t) {
 
   actual = pid.pidReducer(undefined, {});
 
-  var expected = TEST_STATE;
-  t.deepEqual(actual, expected, "expected reducer to initialize state");
+  var expected = pid.initialPidState;
+  t.deepEqual(actual.get('internal'), expected, "expected reducer to initialize state");
 
 });
 
@@ -180,3 +181,34 @@ test('test heater turns on and off', function(t) {
   nState = pid.pidReducer(state, addTempAction);
   t.notOk(nState.get(['internal', 'heater_on']), "heater should be off when hot");
 });
+
+test('support holiday setting', function(t){
+  t.plan(7);
+  
+  var action = pid.createUpdateHoliday(1);
+  var state = pid.pidReducer(TEST_STATE, action);
+  
+  t.ok(state.getIn(['internal', 'is_holiday']));
+  t.equal(state.getIn(['internal', 'target']), pid.HOLIDAY_TARGET, "expected to have anti-freeze temp when on holiday");
+  
+  action = pid.createSetTargetAction(20);
+  state = pid.pidReducer(state, action);
+  
+  t.ok(state.getIn(['internal', 'is_holiday']));
+  t.equal(state.getIn(['internal', 'target']), pid.HOLIDAY_TARGET, "expected to have anti-freeze temp when on holiday");
+  
+  action = pid.createUpdateHoliday(0);
+  state = pid.pidReducer(TEST_STATE, action);
+  
+  t.notOk(state.getIn(['internal', 'isHoliday']));
+  
+  action = pid.createSetTargetAction(20);
+  state = pid.pidReducer(state, action);
+  
+  t.notOk(state.getIn(['internal', 'is_holiday']));
+  t.equal(state.getIn(['internal', 'target']), 20, "expected update temp when not on holiday");
+  
+  
+  
+  
+})

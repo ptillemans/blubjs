@@ -2,6 +2,7 @@ import React from 'react';
 import Footer from './Footer';
 import TemperatureChart from '../containers/TemperatureChart';
 import TargetSlider from '../containers/TargetSlider';
+import HolidayToggle from '../containers/HolidayToggle';
 import TemperatureActuals from '../containers/TemperatureActuals';
 import Schedule from '../containers/Schedule';
 
@@ -14,6 +15,7 @@ const App = () => (
         <TargetSlider />
       </div>
       <TemperatureActuals />
+      <HolidayToggle />
       <Schedule />
       <Footer />
     </div>
