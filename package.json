@@ -8,7 +8,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "babelify": "^8.0.0",
-    "body-parser": "^1.20.5",
+    "body-parser": "^1.20.6",
     "bootstrap": "^3.4.1",
     "chart.js": "^2.9.3",
     "clockpicker": "0.0.7",
