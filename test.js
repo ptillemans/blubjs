@@ -5,3 +5,4 @@ var testDs1820 = require('./tests/ds1820');
 var Temperatures = require('./tests/Temperatures');
 var pid_ctrl = require('./tests/PIDController');
 var scheduler = require('./tests/Scheduler');
+require('./tests/app');

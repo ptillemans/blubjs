@@ -1,24 +1,21 @@
-import $ from 'jquery/dist/jquery.min';
+import $ from 'jquery';
 import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import blubApp from './reducers';
 import App from './components/App';
 import {updateSamplesAction, updateScheduleAction} from './actions';
 
-// enable jquery for bootstrap helpers
-global.$ = global.jQuery = $;
 
 let store = createStore(blubApp,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
-render(
+createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <App />
-  </Provider>,
-  document.getElementById('root')
+  </Provider>
 );
 
 function fetchSamples(store) {

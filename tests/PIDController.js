@@ -1,11 +1,9 @@
 var test = require('tape');
 var Immutable = require('immutable');
 var td = require('testdouble');
-var timers = require('testdouble-timers').default;
 var pid = require('../lib/PIDController');
 var temperature = require('../lib/Temperatures');
 
-timers.use(td);
 
 var TEST_DATE = new Date(2018,5,24,12,0);
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {updateTargetAction} from '../actions';
 /* global fetch */
@@ -15,10 +14,7 @@ const TargetSlider = ({target, updateTarget}) => (
         </div>
 );
 
-TargetSlider.propTypes = {
-  updateTarget: PropTypes.func.isRequired,
-  target: PropTypes.number.isRequired
-};
+
 
 
 function updateTarget(dispatch, target) {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import {Chart as ChartJS} from 'chart.js/dist/Chart.bundle.min.js';
+import ChartJS from 'chart.js/auto';
+import 'chartjs-adapter-date-fns';
 
 class Chart extends Component {
 
@@ -34,22 +34,11 @@ class Chart extends Component {
 
     render() {
         return (
-            <canvas ref={(canvas) => this.canvas = canvas}></canvas>
+            <canvas ref={(canvas) => { this.canvas = canvas; }}></canvas>
         );
     }
 }
 
-Chart.propTypes = {
-    type: PropTypes.string.isRequired,
-    data: PropTypes.shape({
-        labels: PropTypes.arrayOf(PropTypes.any),
-        datasets: PropTypes.arrayOf(PropTypes.shape({
-            label: PropTypes.string,
-            data: PropTypes.arrayOf(PropTypes.any)
-        })),
-        width: PropTypes.number
-    }),
-    options: PropTypes.any
-};
+
 
 export default Chart;

@@ -41,24 +41,27 @@ outputs at the moment.
 
 # Development
 
-## Testing
+## Runtime and build (2026)
 
-We use the *tape* testing framework for lightweight testing on this project.2-Relay Module
+Use Node.js 24 or newer and npm. Install the locked dependencies and build the dashboard:
 
-    babel-node test.js | faucet
+```sh
+npm ci
+npm run build
+npm test
+```
 
-or
+`npm run build` bundles React and Chart.js into `public/bundle.js` and copies
+Bootstrap CSS. `npm run make` is an alias; `npm run watch` rebuilds the development
+bundle when source files change. The build uses esbuild with React's automatic JSX
+transform. The Chart.js time axis uses the date-fns adapter.
 
-    npm run test
+Tests use tape and testdouble; failures return a nonzero exit code.
+Run `npm audit` to check the installed dependency tree for known vulnerabilities.
 
-to test.
-
-## Promises
-
-Node v0.10 does not come with native promises. This is a problem, as once one
-tasted from promises it is difficult to go back to callbacks.
-
-The *bluebird* library is used here as it allows to *promisify* the interfaces.
+The thermostat entry point (`node main.js`) requires BeagleBone hardware and its
+board-provided `bonescript` module, which is not installed by this package. Hardware
+control must be checked on the target board after upgrading Node.js.
 
 ## Immutable JS
 

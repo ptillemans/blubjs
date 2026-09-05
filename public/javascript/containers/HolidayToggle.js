@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {updateHoliday} from '../actions';
 /* global fetch */
@@ -17,10 +16,7 @@ const HolidayToggle = ({isHoliday, updateTarget}) => (
         </div>
 );
 
-HolidayToggle.propTypes = {
-  toggleHoliday: PropTypes.func.isRequired,
-  target: PropTypes.number.isRequired
-};
+
 
 function toggleHoliday(dispatch, isHoliday) {
     var newHoliday = isHoliday ? 0 : 1;

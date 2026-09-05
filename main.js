@@ -1,4 +1,3 @@
-global.globalThis = require("globalthis/polyfill")
 var ds1820 = require("./lib/ds1820");
 var Temperatures = require("./lib/Temperatures");
 var PIDController = require("./lib/PIDController");

@@ -24,7 +24,7 @@ function getData(data) {
       },
       {
         label: 'Target',
-        lineTension: 0,
+        tension: 0,
         data: data.map(o => o.target ? o.target.toFixed(2) : 14.00),
         borderWidth: 1,
         borderColor: 'rgba(255,255,0,1)',
@@ -32,7 +32,7 @@ function getData(data) {
       },
       {
         label: 'Heater',
-        lineTension: 0,
+        tension: 0,
         data: data.map(o => o.heater_on ? o.target.toFixed(2) : 14.00),
         borderWidth: 1,
         borderColor: 'rgba(255,0,0,1)',
@@ -50,15 +50,15 @@ const mapStateToProps = function(state) {
   options: {
     responsive: true,
     scales: {
-      xAxes: [{
+      x: {
         type: 'time',
         display: true
-      }],
-      yAxes: [{
+      },
+      y: {
         type: 'linear',
         beginAtZero: true,
         max: 30
-      }]
+      }
     },
     animation: {
       duration: 0

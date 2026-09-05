@@ -3,14 +3,12 @@ var test = require('tape');
 var Immutable = require('immutable');
 var redux = require('redux');
 var td = require('testdouble');
-var timers = require('testdouble-timers').default;
 
-timers.use(td);
 
 test('action creator for adding temperatures', function(t) {
   t.plan(3);
 
-  var clock = td.timers();
+  td.replace(Date, "now", () => 1710000000000);
 
   var expected = 25.0;
   var action = Temperatures.createAddTemperatureAction(expected);

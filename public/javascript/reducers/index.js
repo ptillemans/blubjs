@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
 import * as t from '../constants';
-import R from 'ramda';
+import * as R from 'ramda';
 
 // samples reducer
 function samples(state = [], action ) {
@@ -19,7 +19,7 @@ function target(state = 14, action ) {
         return action.payload;
       case t.ADD_SAMPLES:
         console.log("target reducer: " + R.last(action.payload));
-        const {target} = R.last(action.payload);
+        const {target} = R.last(action.payload) || {};
         console.log("target reducer: target=" + target);
         return target || state;
       default:
@@ -39,9 +39,10 @@ function actuals(state = initialActuals, action) {
     case t.SET_TARGET:
       return { ...state, target: action.payload};
     case t.ADD_SAMPLES:
-      if (action.payload === []) return state;
+      if (action.payload.length === 0) return state;
       let sample = R.last(R.filter(t => t.internal, action.payload));
       console.log("actuals reducer: " + JSON.stringify(sample));
+      if (!sample) return state;
       const {internal, hendrik, target, heater} = sample;
       return ({ ...state,
         actual: internal,

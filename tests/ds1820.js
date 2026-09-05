@@ -1,7 +1,6 @@
 var test = require('tape');
 var ds1820 = require("../lib/ds1820");
 var td = require('testdouble');
-var Promise = require('bluebird');
 
 const CONTENT = "blablablablabla\nblablablablbla t=22123";
 
